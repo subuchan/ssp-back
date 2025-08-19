@@ -224,6 +224,147 @@
 
 // module.exports = router;
 
+// const express = require("express");
+// const router = express.Router();
+// const Order = require("../models/Order");
+// const PDFDocument = require("pdfkit"); // 👈 make sure this is installed
+
+// // Create Order
+// router.post("/", async (req, res) => {
+//   try {
+//     const payload = req.body;
+
+//     if (!payload.totalPrice && Array.isArray(payload.products)) {
+//       payload.totalPrice = payload.products.reduce(
+//         (s, p) => s + Number(p.price) * Number(p.quantity),
+//         0
+//       );
+//     }
+
+//     const newOrder = new Order(payload);
+//     await newOrder.save();
+//     res.status(201).json(newOrder);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// // ✅ Get all Orders (with optional date filter)
+// router.get("/", async (req, res) => {
+//   try {
+//     const { date } = req.query;
+//     let filter = {};
+
+//     if (date) {
+//       const start = new Date(date);
+//       const end = new Date(date);
+//       end.setDate(end.getDate() + 1);
+
+//       filter.createdAt = { $gte: start, $lt: end };
+//     }
+
+//     const orders = await Order.find(filter)
+//       .populate("items.vegetableId")
+//       .sort({ createdAt: -1 })
+//       .exec();
+
+//     res.json(orders);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// // Update Order
+// router.put("/:id", async (req, res) => {
+//   try {
+//     const updated = await Order.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//     });
+//     res.json(updated);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// // Delete Order
+// router.delete("/:id", async (req, res) => {
+//   try {
+//     await Order.findByIdAndDelete(req.params.id);
+//     res.json({ message: "Order deleted" });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// // ✅ Update Order Status (Delivered / Pending)
+// router.put("/:id/status", async (req, res) => {
+//   try {
+//     const { status } = req.body; // expect boolean true/false
+
+//     const updatedOrder = await Order.findByIdAndUpdate(
+//       req.params.id,
+//       { status },
+//       { new: true }
+//     );
+
+//     if (!updatedOrder) {
+//       return res.status(404).json({ error: "Order not found" });
+//     }
+
+//     res.json(updatedOrder);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// // ✅ Generate PDF for a single order
+// router.get("/:id/pdf", async (req, res) => {
+//   try {
+//     const order = await Order.findById(req.params.id).populate("items.vegetableId");
+
+//     if (!order) return res.status(404).json({ error: "Order not found" });
+
+//     const doc = new PDFDocument();
+//     res.setHeader("Content-Disposition", ⁠ attachment; filename=Order_${order._id}.pdf ⁠);
+//     res.setHeader("Content-Type", "application/pdf");
+
+//     doc.pipe(res);
+
+//     // Header
+//     doc.fontSize(18).text("Order Invoice", { align: "center" });
+//     doc.moveDown();
+
+//     // Customer Info
+//     doc.fontSize(12).text(⁠ Name: ${order.customer.name} ⁠);
+//     doc.text(⁠ Phone: ${order.customer.phone} ⁠);
+//     if (order.customer.address) doc.text(⁠ Address: ${order.customer.address} ⁠);
+//     doc.moveDown();
+
+//     // Table header
+//     doc.fontSize(12).text("Vegetable   Qty(Kg)   Price/Kg   Row Total");
+//     doc.moveDown();
+
+//     order.items.forEach((item) => {
+//       doc.text(
+//         ⁠ ${item.vegetableId?.name || "N/A"}   ${item.quantityKg}   ₹${item.pricePerKg}   ₹${item.rowTotal} ⁠
+//       );
+//     });
+
+//     doc.moveDown();
+//     doc.fontSize(14).text(
+//       ⁠ Total Amount: ₹${order.items.reduce((s, i) => s + i.rowTotal, 0)} ⁠,
+//       { align: "right" }
+//     );
+
+//     doc.end();
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+// module.exports = router;
+
+
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/Order");
@@ -325,7 +466,10 @@ router.get("/:id/pdf", async (req, res) => {
     if (!order) return res.status(404).json({ error: "Order not found" });
 
     const doc = new PDFDocument();
-    res.setHeader("Content-Disposition", ⁠ attachment; filename=Order_${order._id}.pdf ⁠);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=Order_${order._id}.pdf`
+    );
     res.setHeader("Content-Type", "application/pdf");
 
     doc.pipe(res);
@@ -335,9 +479,9 @@ router.get("/:id/pdf", async (req, res) => {
     doc.moveDown();
 
     // Customer Info
-    doc.fontSize(12).text(⁠ Name: ${order.customer.name} ⁠);
-    doc.text(⁠ Phone: ${order.customer.phone} ⁠);
-    if (order.customer.address) doc.text(⁠ Address: ${order.customer.address} ⁠);
+    doc.fontSize(12).text(`Name: ${order.customer.name}`);
+    doc.text(`Phone: ${order.customer.phone}`);
+    if (order.customer.address) doc.text(`Address: ${order.customer.address}`);
     doc.moveDown();
 
     // Table header
@@ -346,13 +490,13 @@ router.get("/:id/pdf", async (req, res) => {
 
     order.items.forEach((item) => {
       doc.text(
-        ⁠ ${item.vegetableId?.name || "N/A"}   ${item.quantityKg}   ₹${item.pricePerKg}   ₹${item.rowTotal} ⁠
+        `${item.vegetableId?.name || "N/A"}   ${item.quantityKg}   ₹${item.pricePerKg}   ₹${item.rowTotal}`
       );
     });
 
     doc.moveDown();
     doc.fontSize(14).text(
-      ⁠ Total Amount: ₹${order.items.reduce((s, i) => s + i.rowTotal, 0)} ⁠,
+      `Total Amount: ₹${order.items.reduce((s, i) => s + i.rowTotal, 0)}`,
       { align: "right" }
     );
 
