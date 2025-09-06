@@ -243,45 +243,227 @@
 
 // module.exports = mongoose.model("Order", orderSchema);
 
+//old
+
+// const mongoose = require("mongoose");
+
+// const orderSchema = new mongoose.Schema({
+//   customer: {
+//     name: String,
+//     phone: String,
+//     // address: String,
+//   },
+//   items: [
+//     {
+//       vegetableId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vegetable' },
+//       quantityKg: { type: Number, required: true },
+//       pricePerKg: { type: Number, required: true },
+//       rowTotal: { type: Number, default: 0 },
+//     },
+//   ],
+//   totalAmount: { type: Number, default: 0 }, // sum of all rowTotal
+//   status: { type: Boolean, default: false },
+// }, { timestamps: true });
+
+
+// // 🔑 Auto calculate before saving
+// orderSchema.pre("save", function (next) {
+//   this.items.forEach(item => {
+//     item.rowTotal = item.quantityKg * item.pricePerKg;
+//   });
+//   this.totalAmount = this.items.reduce((sum, item) => sum + item.rowTotal, 0);
+//   next();
+// });
+
+// // 🔑 Auto calculate before update
+// orderSchema.pre("findOneAndUpdate", function (next) {
+//   const update = this.getUpdate();
+//   if (update.items) {
+//     update.items.forEach(item => {
+//       item.rowTotal = item.quantityKg * item.pricePerKg;
+//     });
+//     update.totalAmount = update.items.reduce((sum, item) => sum + item.rowTotal, 0);
+//   }
+//   next();
+// });
+
+// module.exports = mongoose.model("Order", orderSchema);
+
+
+// const mongoose = require("mongoose");
+
+// const orderSchema = new mongoose.Schema({
+//   customer: {
+//     name: String,
+//     phone: String,
+//     // address: String,
+//   },
+//   items: [
+//     {
+//       vegetableId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vegetable' },
+//       quantityKg: { type: Number, required: true },
+//       pricePerKg: { type: Number, required: true },
+//       rowTotal: { type: Number, default: 0 },
+//     },
+//   ],
+//   totalAmount: { type: Number, default: 0 }, // sum of all rowTotal
+//   status: { type: Boolean, default: false }, // false = pending, true = delivered
+// }, { timestamps: true });
+
+// // 🔑 Auto calculate before saving
+// orderSchema.pre("save", function (next) {
+//   this.items.forEach(item => {
+//     item.rowTotal = item.quantityKg * item.pricePerKg;
+//   });
+//   this.totalAmount = this.items.reduce((sum, item) => sum + item.rowTotal, 0);
+//   next();
+// });
+
+// // 🔑 Auto calculate before update
+// orderSchema.pre("findOneAndUpdate", function (next) {
+//   const update = this.getUpdate();
+//   if (update.items) {
+//     update.items.forEach(item => {
+//       item.rowTotal = item.quantityKg * item.pricePerKg;
+//     });
+//     update.totalAmount = update.items.reduce((sum, item) => sum + item.rowTotal, 0);
+//   }
+//   next();
+// });
+
+// module.exports = mongoose.model("Order", orderSchema);
+
+
+// const mongoose = require("mongoose");
+// const Vegetable = require("./Vegetable");
+
+// const orderSchema = new mongoose.Schema({
+//   customer: {
+//     name: { type: String, required: true },
+//     phone: { type: String, required: true },
+//     // address: String, // optional
+//   },
+//   items: [
+//     {
+//       vegetableId: { type: mongoose.Schema.Types.ObjectId, ref: "Vegetable", required: true },
+//       supplierName: { type: String }, // NEW: store supplier for summary
+//       quantityKg: { type: Number, required: true },
+//       pricePerKg: { type: Number, required: true },
+//       rowTotal: { type: Number, default: 0 },
+//     },
+//   ],
+//   totalAmount: { type: Number, default: 0 }, // sum of all rowTotal
+//   status: { type: Boolean, default: false }, // false = pending, true = delivered
+// }, { timestamps: true });
+
+// // 🔑 Auto calculate before saving
+// orderSchema.pre("save", async function (next) {
+//   for (let item of this.items) {
+//     // Calculate row total
+//     item.rowTotal = item.quantityKg * item.pricePerKg;
+
+
+//     // Auto-populate supplierName from Vegetable if missing
+//     if (!item.supplierName) {
+//       const veg = await Vegetable.findById(item.vegetableId);
+//       if (veg) item.supplierName = veg.supplierName || "Unknown";
+//     }
+//   }
+//   this.totalAmount = this.items.reduce((sum, item) => sum + item.rowTotal, 0);
+//   next();
+// });
+
+// // 🔑 Auto calculate before update
+// orderSchema.pre("findOneAndUpdate", async function (next) {
+//   const update = this.getUpdate();
+
+//   if (update.items) {
+//     for (let item of update.items) {
+//       item.rowTotal = item.quantityKg * item.pricePerKg;
+
+//       // Auto-populate supplierName from Vegetable if missing
+//       if (!item.supplierName) {
+//         const veg = await Vegetable.findById(item.vegetableId);
+//         if (veg) item.supplierName = veg.supplierName || "Unknown";
+//       }
+//     }
+//     update.totalAmount = update.items.reduce((sum, item) => sum + item.rowTotal, 0);
+//   }
+//   next();
+// });
+
+// module.exports = mongoose.model("Order", orderSchema);
+
 
 const mongoose = require("mongoose");
+const Vegetable = require("./Vegetable");
 
-const orderSchema = new mongoose.Schema({
-  customer: {
-    name: String,
-    phone: String,
-    // address: String,
-  },
-  items: [
-    {
-      vegetableId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vegetable' },
-      quantityKg: { type: Number, required: true },
-      pricePerKg: { type: Number, required: true },
-      rowTotal: { type: Number, default: 0 },
+const orderSchema = new mongoose.Schema(
+  {
+    customer: {
+      name: { type: String, required: true },
+      phone: { type: String, required: true },
+      // address: String, // optional
     },
-  ],
-  totalAmount: { type: Number, default: 0 }, // sum of all rowTotal
-  status: { type: Boolean, default: false },
-}, { timestamps: true });
+    items: [
+      {
+        vegetableId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Vegetable",
+          required: true,
+        },
+        supplierName: { type: String }, // store supplier for summary
+        quantityKg: { type: Number, required: true },
+        pricePerKg: { type: Number, required: true },
+        rowTotal: { type: Number, default: 0 },
+      },
+    ],
+    totalAmount: { type: Number, default: 0 }, // sum of all rowTotal
 
+    // 👇 change Boolean → String enum
+    status: {
+      type: String,
+      enum: ["Pending", "Delivered"],
+      default: "Pending",
+    },
+  },
+  { timestamps: true }
+);
 
 // 🔑 Auto calculate before saving
-orderSchema.pre("save", function (next) {
-  this.items.forEach(item => {
+orderSchema.pre("save", async function (next) {
+  for (let item of this.items) {
+    // Calculate row total
     item.rowTotal = item.quantityKg * item.pricePerKg;
-  });
+
+    // Auto-populate supplierName from Vegetable if missing
+    if (!item.supplierName) {
+      const veg = await Vegetable.findById(item.vegetableId);
+      if (veg) item.supplierName = veg.supplierName || "Unknown";
+    }
+  }
   this.totalAmount = this.items.reduce((sum, item) => sum + item.rowTotal, 0);
   next();
 });
 
 // 🔑 Auto calculate before update
-orderSchema.pre("findOneAndUpdate", function (next) {
+orderSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate();
+
   if (update.items) {
-    update.items.forEach(item => {
+    for (let item of update.items) {
       item.rowTotal = item.quantityKg * item.pricePerKg;
-    });
-    update.totalAmount = update.items.reduce((sum, item) => sum + item.rowTotal, 0);
+
+      // Auto-populate supplierName from Vegetable if missing
+      if (!item.supplierName) {
+        const veg = await Vegetable.findById(item.vegetableId);
+        if (veg) item.supplierName = veg.supplierName || "Unknown";
+      }
+    }
+    update.totalAmount = update.items.reduce(
+      (sum, item) => sum + item.rowTotal,
+      0
+    );
   }
   next();
 });

@@ -58,14 +58,14 @@ const createDefaultAdmins = async () => {
     }
 
     // ===== Create admin1 =====
-    const existingAdmin1 = await Admin.findOne({ username: 'admin1' });
-    if (!existingAdmin1) {
-      const hashedPassword = await bcrypt.hash('admin123', 10);
-      await Admin.create({ username: 'admin1', password: hashedPassword });
-      console.log('✅ Default admin1 created: admin1 / admin123');
-    } else {
-      console.log('🚨 Admin1 already exists');
-    }
+    // const existingAdmin1 = await Admin.findOne({ username: 'admin1' });
+    // if (!existingAdmin1) {
+    //   const hashedPassword = await bcrypt.hash('admin123', 10);
+    //   await Admin.create({ username: 'admin1', password: hashedPassword });
+    //   console.log('✅ Default admin1 created: admin1 / admin123');
+    // } else {
+    //   console.log('🚨 Admin1 already exists');
+    // }
 
     process.exit(0);
   } catch (err) {

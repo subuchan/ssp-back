@@ -50,6 +50,8 @@ const veggies = [
   { name: 'இஞ்சி (Ginger)', pricePerKg: 80, availableKg: getRandomKg(), image: 'https://holisticlivingtips.com/wp-content/uploads/2017/06/ginger.jpg' },
   { name: 'பூண்டு (Garlic)', pricePerKg: 100, availableKg: getRandomKg(), image: 'https://www.almanac.com/sites/default/files/image_nodes/garlic-growing-guide.jpg' },
   { name: 'தேங்காய் (Coconut)', pricePerKg: 40, availableKg: getRandomKg(), image:'https://images.saymedia-content.com/.image/t_share/MjA0NDc4ODMzMzE3OTE0NDAw/health-nutrition-benefits-of-coconut.jpg'},
+  // { name: 'கருவேப்பிலை (Curry Leaves)', pricePerKg: 30, availableKg: getRandomKg(), image: 'https://www.netmeds.com/images/cms/wysiwyg/blog/2019/08/curry_leaves_big_1.jpg' },
+
 ];
 
 
