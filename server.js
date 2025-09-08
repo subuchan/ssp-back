@@ -24,7 +24,7 @@ connectDB();
 const app = express();
 app.use(express.json()); 
 app.use(cors({
-  origin: 'https://sairamtestnew.atriowings.in',
+  origin: 'https://sreesairam.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
