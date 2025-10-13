@@ -12,9 +12,6 @@ const path = require('path');
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
-// const vegetableRoutes = require('./routes/vegetableRoutes');
-// const orderRoutes = require('./routes/orderRoutes');
-// const supplierRoutes = require('./routes/supplierRoutes');
 
 // Load env variables
 dotenv.config();
@@ -36,10 +33,6 @@ app.use(cors({
 // Routes
 
 app.use('/api/auth', authRoutes);
-
-// app.use('/api/vegetables', vegetableRoutes);
-// app.use('/api/orders', orderRoutes);
-// app.use('/api/suppliers', supplierRoutes);
 
 app.get('/', (req, res) => {
   res.send("S.S.Promoters Backend is running...");
