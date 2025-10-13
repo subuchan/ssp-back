@@ -1,24 +1,10 @@
-// // routes/authRoutes.js
-// const express = require('express');
-// const { loginAdmin, } = require('../controllers/authController');
-
-// const router = express.Router();
-
-// router.post('/login-admin', loginAdmin);
-// router.post('/login-admin1', loginAdmin1);
-
-// module.exports = router;
-
-
-const express = require('express');
-const { loginAdmin,  } = require('../controllers/authController');
-
+const express = require("express");
 const router = express.Router();
+const { loginAdmin, registerUser, loginUser } = require("../controllers/authController");
 
-// Regular admin
-router.post('/login', loginAdmin);
-
-// // Admin1
-// router.post('/login-admin1', loginAdmin1);
+router.post("/admin/login", loginAdmin);
+// router.post('/admin/login', loginAdmin);
+router.post("/register", registerUser);
+router.post('/login', loginUser);
 
 module.exports = router;
