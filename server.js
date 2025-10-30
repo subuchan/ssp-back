@@ -21,8 +21,7 @@ connectDB();
 const app = express();
 app.use(express.json()); 
 app.use(cors({
-  origin: 'https://sspgroups.online',
-  // origin: 'http://localhost:5173',
+  origin: ['https://sspgroups.online', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -39,7 +38,7 @@ app.get('/', (req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🌐 CORS allowed origin: ${process.env.CORS_ORIGIN}`);
 });
