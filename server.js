@@ -21,7 +21,7 @@ connectDB();
 const app = express();
 app.use(express.json()); 
 app.use(cors({
-  origin: ['https://sspgroups.online', 'http://localhost:5173'],
+  origin: ['https://sspgroups.online','https://sspgroups.appowise.in', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
